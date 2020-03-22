@@ -1,0 +1,218 @@
+Tracking : 
+
+# import the necessary packages
+from imutils.video import VideoStream
+import argparse
+import imutils
+import time
+import cv2
+import  Drawing as draw
+import mapping as map
+
+# initialize a dictionary that maps strings to their corresponding
+# OpenCV object tracker implementations
+OPENCV_OBJECT_TRACKERS = {
+	"csrt": cv2.TrackerCSRT_create,
+	"kcf": cv2.TrackerKCF_create,
+	"boosting": cv2.TrackerBoosting_create
+}
+
+xs = []
+ys = []
+red = [155,0,255]
+
+d = [[246,164],[664,167],[75,429],[840,439]]
+# if a video path was not supplied, grab the reference to the web cam
+print("[INFO] starting video stream...")
+time.sleep(.5)
+
+# otherwise, grab a reference to the video file
+
+# loop over frames from the video stream
+
+def run (video) :
+	# otherwise, grab a reference to the video file
+	i =0
+	FPS_SMOOTHING = 0.9
+	fps = 0.0
+	prev = time.time()
+	# loop over frames from the video stream
+	vs = cv2.VideoCapture(video)
+	# initialize OpenCV's special multi-object tracker
+	trackers = cv2.MultiTracker_create()
+
+	while True:
+		# grab the current frame, then handle if we are using a
+		# VideoStream or VideoCapture object
+		frame = vs.read()
+		frame = frame[1] 
+		now = time.time()
+		fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
+		prev = now
+		fpstext = 'FPS = ' + str(int(fps))
+		draw.drawText(frame,fpstext , (10,10))
+		# check to see if we have reached the end of the stream
+		if frame is None:
+			#print(corr)
+			return xs , ys
+			break
+	 
+		# resize the frame (so we can process it faster)
+		frame = imutils.resize(frame, width=854,height=480)
+		# grab the updated bounding box coordinates (if any) for each
+		# object that is being tracked
+		(success, boxes) = trackers.update(frame)
+	 
+		# loop over the bounding boxes and draw then on the frame
+		for box in boxes:
+		
+			(x, y, w, h) = [int(v) for v in box]
+			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+			
+				# print(str(x+int(w/2))+','+str(y+int(h/2)))
+
+			if (i % 5 ==0 ):	
+				# xs.append(x+int(w/2))
+				# ys.append(y+int(h))	
+				x_map,y_map= map.map([x+int(w/2),y+int(h)])
+				xs.append(x_map)
+				ys.append(y_map)
+			
+			cv2.circle(frame, (x+int(w/2),y+int(h)), 5, red, -1)
+
+				
+			i+=1
+		cv2.imshow("Frame", frame)
+		key = cv2.waitKey(1) & 0xFF
+		
+		# if the 's' key is selected, we are going to "select" a bounding
+		# box to track
+		if key == ord("f"):
+			# select the bounding box of the object we want to track (make
+			# sure you press ENTER or SPACE after selecting the ROI)
+			box = cv2.selectROI("Frame", frame, fromCenter=False,
+				showCrosshair=True)
+	 
+			# create a new object tracker for the bounding box and add it
+			# to our multi-object tracker
+			tracker = OPENCV_OBJECT_TRACKERS['csrt']()
+			trackers.add(tracker, frame, box)
+			
+			# if the `q` key was pressed, break from the loop
+		elif key == ord("q"):
+			
+			break
+ 
+
+	# otherwise, release the file pointer
+	else:
+		vs.release()
+	 
+	# close all windows
+	cv2.destroyAllWindows()
+	
+	
+
+___________________________________________________
+
+Mapping : 
+import cv2	    # import the OpenCV library						
+import numpy as np  # import the numpy library
+import Drawing as draw
+# provide points from image 1 الحقيقيه
+pts_src = np.array([[244,165],[665,167],[72,429],[837,437]])
+# corresponding points from image 2 (i.e. (154, 174) matches (212, 80)) التانيه
+pts_dst = np.array([[53,61],[204,58],[52,394],[204,391]])
+
+# corr = object.fuc
+# 
+# calculate matrix H
+
+def map (point):
+	h, status = cv2.findHomography(pts_src, pts_dst)
+	# provide a point you wish to map from image 1 to image 2
+	a = np.array([point], dtype='float32')
+	a = np.array([a])
+	 
+	# finally, get the mapping
+	pointsOut = cv2.perspectiveTransform(a, h)
+	#print(pointsOut)
+	x = (pointsOut[0][0][0])
+	y = pointsOut[0][0][1]
+	
+
+	# el real 			  el fake 854 480
+	# (246,164) upper left corner (164,64)
+	# (664,167) upper right (675,64)
+	# (75,429) down left    (164,416)
+	# (840,439) down right  (675,415)
+	# (454,257) middle      (421,242)
+	red = [0,0,255]
+	
+	
+	image = cv2.imread('media/map2.jpg')
+	# Make one pixel red
+	draw.draw(pts_dst,image)
+	# Save
+	## debug the function {
+	
+	## }end 
+	# cv2.imshow("result.png",image)
+	# cv2.waitKey(0)
+	# cv2.destroyAllWindows()
+	return x , y
+
+
+
+_________________________
+heatmap : 
+
+import pandas as pd
+import cv2
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Arc
+import seaborn as sns
+
+def heat (x,y) : 
+	img = cv2.imread("media/map2.jpg")
+	fig, ax = plt.subplots()
+
+	fig, ax = plt.subplots()
+	ax.imshow(img,aspect ='equal',origin ='upper')
+
+	plt.ylim(max(plt.ylim()), min(plt.ylim()))
+
+	#Tidy Axes
+	plt.axis('off')
+	
+	sns.kdeplot(x,y, legend=True,cmap = "Purples_d")
+	
+	plt.show(block = False)
+_________________
+gif : 
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation
+import cv2
+import Drawing as draw
+def animation (x,y):
+	img = cv2.imread("media/map2.jpg")
+	fig, ax = plt.subplots()
+    
+	ax.imshow(img,origin ='upper')
+	plt.ylim(max(plt.ylim()), min(plt.ylim()))
+	graph, = plt.plot([], [])
+	def animate(i):
+		graph.set_data(x[:i+1], y[:i+1])
+            
+		return graph
+	ani = FuncAnimation(fig,animate)
+	plt.show()
+# ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
+                                # repeat_delay=1000)
+
+# ani.save('dynamic_images.mp4')
+
