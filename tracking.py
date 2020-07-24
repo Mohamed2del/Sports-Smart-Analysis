@@ -5,6 +5,7 @@ import imutils
 import time
 import cv2
 import  Drawing as draw
+import time
 import mapping as map
 
 # initialize a dictionary that maps strings to their corresponding
@@ -21,7 +22,6 @@ red = [155,0,255]
 
 d = [[246,164],[664,167],[75,429],[840,439]]
 # if a video path was not supplied, grab the reference to the web cam
-print("[INFO] starting video stream...")
 time.sleep(.5)
 
 # otherwise, grab a reference to the video file
@@ -32,7 +32,9 @@ def change_res(cap , width, height):
     cap.set(3, width)
     cap.set(4, height)
     
-def run (video) :
+def run (video , pts_src) :
+	Player_Marked =False
+
     
 	# otherwise, grab a reference to the video file
 	i =0
@@ -46,8 +48,9 @@ def run (video) :
 	#change_res(vs,854,480)
     
 	trackers = cv2.MultiTracker_create() 
-    
+
 	while True:
+		time.sleep(0.0099)
 		# grab the current frame, then handle if we are using a
 		# VideoStream or VideoCapture object
 		frame = vs.read()
@@ -55,9 +58,11 @@ def run (video) :
 		now = time.time()
 		fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
 		prev = now
-		fpstext = 'FPS = ' + str(int(fps))
-		draw.drawText(frame,fpstext , (10,10))
-		# check to see if we have reached the end of the stream
+		fpstext = 'FPS = ' + str(int(fps))  
+	
+      
+
+        # check to see if we have reached the end of the stream
 		if frame is None:
 			#print(corr)
 			return xs , ys
@@ -80,7 +85,7 @@ def run (video) :
 			if (i % 5 ==0 ):	
 				# xs.append(x+int(w/2))
 				# ys.append(y+int(h))	
-				x_map,y_map= map.map([x+int(w/2),y+int(h)])
+				x_map,y_map= map.map([x+int(w/2),y+int(h)],pts_src)
 				xs.append(x_map)
 				ys.append(y_map)
 			
@@ -93,19 +98,39 @@ def run (video) :
 		
 		# if the 's' key is selected, we are going to "select" a bounding
 		# box to track
-		if key == ord("s"):
-			# select the bounding box of the object we want to track (make
-			# sure you press ENTER or SPACE after selecting the ROI)
-			box = cv2.selectROI("Frame", frame, fromCenter=False,
-				showCrosshair=True)
-	 
-			# create a new object tracker for the bounding box and add it
-			# to our multi-object tracker
-			tracker = OPENCV_OBJECT_TRACKERS['csrt']()
-			trackers.add(tracker, frame, box)
+		if(Player_Marked == False):
 			
-			# if the `q` key was pressed, break from the loop
-		elif key == ord("q"):
+			if key == ord("s"):
+				# select the bounding box of the object we want to track (make
+				# sure you press ENTER or SPACE after selecting the ROI)
+				playerState = int(input("Enter 0 if the player is new Or 1 if he is allready existing in the club database : "))
+				
+				if (playerState == 0) : 
+					print("\n \n ========================================================================================================\nEnter Player's Data : ")
+					playerFName =input("First Name : ")
+					playerLName =input("Last Name : ")
+					playerBirthDate =input("BirthDate : ")
+					playerNationlity =input("Nationlaity : ")
+					playerNumber =input("Player's Number : ")
+					playerPosition =input("Position : ")
+				elif (playerState == 1):
+					print("\n \n ========================================================================================================\nEnter Player's Data : ")
+					playerId = (input("Player Id : "))
+				else :
+					print("Please enter a valid input ")
+					
+
+
+				box = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+		
+				# create a new object tracker for the bounding box and add it
+				# to our multi-object tracker
+				tracker = OPENCV_OBJECT_TRACKERS['csrt']()
+				trackers.add(tracker, frame, box)
+				Player_Marked = True
+				
+				# if the `q` key was pressed, break from the loop
+		if key == ord("q"):
 			
 			break
  
@@ -116,5 +141,7 @@ def run (video) :
 	 
 	# close all windows
 	cv2.destroyAllWindows()
+
+   
 	
 	

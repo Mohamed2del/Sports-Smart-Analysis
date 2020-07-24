@@ -2,7 +2,8 @@ import cv2	    # import the OpenCV library
 import numpy as np  # import the numpy library
 import Drawing as draw
 # provide points from image 1 الحقيقيه
-pts_src = np.array([[203,174],[536,192],[250,684],[1196,424],[499,245]])
+# top left top right -- buttom left  bottom right center 
+#pts_src = np.array([[203,174],[536,192],[250,684],[1196,424],[499,245]])
 # corresponding points from image 2 (i.e. (154, 174) matches (212, 80)) التانيه
 pts_dst = np.array([[7,25],[249,24],[5,435],[248,434],[127,224]])
 
@@ -10,7 +11,7 @@ pts_dst = np.array([[7,25],[249,24],[5,435],[248,434],[127,224]])
 # 
 # calculate matrix H
 
-def map (point):
+def map (point , pts_src):
 	h, status = cv2.findHomography(pts_src, pts_dst)
 	# provide a point you wish to map from image 1 to image 2
 	a = np.array([point], dtype='float32')
