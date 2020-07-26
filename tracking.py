@@ -7,13 +7,15 @@ import cv2
 import  Drawing as draw
 import time
 import mapping as map
+import distance as dis
+
+points = []
 
 # initialize a dictionary that maps strings to their corresponding
 # OpenCV object tracker implementations
 OPENCV_OBJECT_TRACKERS = {
 	"csrt": cv2.TrackerCSRT_create,
-	"kcf": cv2.TrackerKCF_create,
-	"boosting": cv2.TrackerBoosting_create
+	
 }
 
 xs = []
@@ -48,9 +50,8 @@ def run (video , pts_src) :
 	#change_res(vs,854,480)
     
 	trackers = cv2.MultiTracker_create() 
-
+	pointer = 0
 	while True:
-		time.sleep(0.0099)
 		# grab the current frame, then handle if we are using a
 		# VideoStream or VideoCapture object
 		frame = vs.read()
@@ -82,12 +83,27 @@ def run (video , pts_src) :
 			
 				# print(str(x+int(w/2))+','+str(y+int(h/2)))
 
-			if (i % 5 ==0 ):	
+			if (i % 100 ==0 ):	
 				# xs.append(x+int(w/2))
 				# ys.append(y+int(h))	
+				
 				x_map,y_map= map.map([x+int(w/2),y+int(h)],pts_src)
 				xs.append(x_map)
 				ys.append(y_map)
+				points.append(x_map)
+				points.append(y_map)
+				if (len(points) >= 4):
+					#(x1,y1,x2,y2)
+					distance = dis.calculateDistance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])
+					draw.drawText(frame,str(int(distance / 100)) , (x,y))
+					print(points)
+					print(pointer)
+					print(distance/100)
+
+					time.sleep(1.5)
+				pointer +=2
+				
+				
 			
 			cv2.circle(frame, (x+int(w/2),y+int(h)), 5, red, -1)
 
@@ -103,22 +119,7 @@ def run (video , pts_src) :
 			if key == ord("s"):
 				# select the bounding box of the object we want to track (make
 				# sure you press ENTER or SPACE after selecting the ROI)
-				playerState = int(input("Enter 0 if the player is new Or 1 if he is allready existing in the club database : "))
 				
-				if (playerState == 0) : 
-					print("\n \n ========================================================================================================\nEnter Player's Data : ")
-					playerFName =input("First Name : ")
-					playerLName =input("Last Name : ")
-					playerBirthDate =input("BirthDate : ")
-					playerNationlity =input("Nationlaity : ")
-					playerNumber =input("Player's Number : ")
-					playerPosition =input("Position : ")
-				elif (playerState == 1):
-					print("\n \n ========================================================================================================\nEnter Player's Data : ")
-					playerId = (input("Player Id : "))
-				else :
-					print("Please enter a valid input ")
-					
 
 
 				box = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
