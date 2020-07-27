@@ -3,12 +3,12 @@ import numpy as np
 import heat as ht
 import gif as gf
 import pick_coordinates
+import t
 
+filename = t.filepick()
+#coordinates = pick_coordinates.pick(r'''C:\Users\moham\Desktop\football\SportsSmartAnalysis\media\1.mp4''')
+coordinates = pick_coordinates.pick(filename)
 
-cord_array = pick_coordinates.c
-coordinates = pick_coordinates.pick("media/2.mp4")
-
-print(np.array(coordinates))
 
 print("[INFO] starting video stream...")
 

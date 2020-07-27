@@ -25,7 +25,6 @@ def pick(videofile) :
     yscroll.config(command=canvas.yview)
     frame.pack(fill=BOTH,expand=1)
    # frame.parent.geometry(500,500)
-    print(type(frame))
     getFirstFrame(videofile)
         #adding the image
     img= cv2.imread("first_frame.jpg")
@@ -60,6 +59,8 @@ def getFirstFrame(videofile):
     success, image = vidcap.read()
     if success:
          cv2.imwrite("first_frame.jpg", image)  # save frame as JPEG file
+    else :
+        print("dasdasdasdasd")
         
         
         
