@@ -1,13 +1,13 @@
 import cv2
 
 # Blue color in BGR 
-color = (255, 0, 255) 
-colors_circle = [[255,0,0],[0,255,0],[255,255,255],[100,200,250]]
+color = (255, 255, 255) 
+#colors_circle = [[255,0,0],[0,255,0],[255,255,255],[100,200,250]]
 # Line thickness of 2 px 
-thickness = 5
+thickness = 1
 font = cv2.FONT_HERSHEY_SIMPLEX 
 # fontScale 
-fontScale = 2
+fontScale = 1
 def draw(data,img):
 	
 	for i,u in enumerate(data) :

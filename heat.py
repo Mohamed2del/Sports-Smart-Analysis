@@ -11,7 +11,6 @@ def heat (x,y) :
 	img = cv2.imread("media/football.jpg")
 	fig, ax = plt.subplots()
 
-	fig, ax = plt.subplots()
 	ax.imshow(img,aspect ='equal',origin ='upper')
 
 	plt.ylim(max(plt.ylim()), min(plt.ylim()))

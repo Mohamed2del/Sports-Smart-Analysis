@@ -8,7 +8,7 @@ import  Drawing as draw
 import time
 import mapping as map
 import distance as dis
-
+import numpy as np
 points = []
 
 # initialize a dictionary that maps strings to their corresponding
@@ -48,9 +48,14 @@ def run (video , pts_src) :
 	# loop over frames from the video stream
 	vs = cv2.VideoCapture(video)
 	#change_res(vs,854,480)
-    
+	distance = 0
+	total_distance = 0
+	speed_list = []
+	t = 3
+	max_speed = 0
 	trackers = cv2.MultiTracker_create() 
 	pointer = 0
+	min_speed = 0
 	while True:
 		# grab the current frame, then handle if we are using a
 		# VideoStream or VideoCapture object
@@ -60,13 +65,24 @@ def run (video , pts_src) :
 		fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
 		prev = now
 		fpstext = 'FPS = ' + str(int(fps))  
-	
-      
+		
+		draw.drawText(frame,str("FPS :"+ fpstext +"FPS") , (40,40))
+		draw.drawText(frame,str("Real Time Distance : "+"%.2f" % round(distance, 2)+" m") , (40,80))
+		draw.drawText(frame,str("Total Distance : "+"%.2f" % round(total_distance, 2)+" m") , (40,120))
+		draw.drawText(frame,str("Current Speed  : " + "%.2f" % round(((distance*3.6)/3) , 2)+" km/h") , (40,160))
+		draw.drawText(frame,str("Max Speed  :" + "%.2f" % round(max_speed,2) + "km/h"), (40,200))
+		draw.drawText(frame,str("Min Speed  :" + "%.2f" % round(min_speed,2) + "km/h"), (40,240))
+
+
+
+
 
         # check to see if we have reached the end of the stream
 		if frame is None:
 			#print(corr)
+			print(speed_list)
 			return xs , ys
+			
 			break
 	 
 		# resize the frame (so we can process it faster)
@@ -83,7 +99,8 @@ def run (video , pts_src) :
 			
 				# print(str(x+int(w/2))+','+str(y+int(h/2)))
 
-			if (i % 100 ==0 ):	
+			# capture frames every x frames
+			if (i % 90 == 0 ):	
 				# xs.append(x+int(w/2))
 				# ys.append(y+int(h))	
 				
@@ -92,15 +109,19 @@ def run (video , pts_src) :
 				ys.append(y_map)
 				points.append(x_map)
 				points.append(y_map)
+
+				###
+				
+
 				if (len(points) >= 4):
 					#(x1,y1,x2,y2)
-					distance = dis.calculateDistance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])
-					draw.drawText(frame,str(int(distance / 100)) , (x,y))
-					print(points)
-					print(pointer)
-					print(distance/100)
+					distance = dis.calculateDistance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])/100
+					total_distance = total_distance + distance
+					speed = ((distance) / t)*3.6
+					speed_list.append(speed)
+					max_speed = max(speed_list)
+					min_speed = min(speed_list)
 
-					time.sleep(1.5)
 				pointer +=2
 				
 				
@@ -134,6 +155,8 @@ def run (video , pts_src) :
 		if key == ord("q"):
 			
 			break
+		if key ==ord("p"):
+			cv2.waitKey()
  
 
 	# otherwise, release the file pointer
