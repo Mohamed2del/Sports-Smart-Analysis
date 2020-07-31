@@ -61,12 +61,12 @@ def run (video , pts_src) :
 		# VideoStream or VideoCapture object
 		frame = vs.read()
 		frame = frame[1] 
-		now = time.time()
-		fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
-		prev = now
-		fpstext = 'FPS = ' + str(int(fps))  
+		# now = time.time()
+		# fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
+		# prev = now
+		# fpstext = 'FPS = ' + str(int(fps))  
 		
-		draw.drawText(frame,str("FPS :"+ fpstext +"FPS") , (40,40))
+		# draw.drawText(frame,str("FPS :"+ fpstext +"FPS") , (40,40))
 		draw.drawText(frame,str("Real Time Distance : "+"%.2f" % round(distance, 2)+" m") , (40,80))
 		draw.drawText(frame,str("Total Distance : "+"%.2f" % round(total_distance, 2)+" m") , (40,120))
 		draw.drawText(frame,str("Current Speed  : " + "%.2f" % round(((distance*3.6)/3) , 2)+" km/h") , (40,160))
@@ -80,7 +80,6 @@ def run (video , pts_src) :
         # check to see if we have reached the end of the stream
 		if frame is None:
 			#print(corr)
-			print(speed_list)
 			return xs , ys
 			
 			break
