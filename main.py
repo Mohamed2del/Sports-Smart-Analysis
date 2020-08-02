@@ -3,19 +3,32 @@ import numpy as np
 import heat as ht
 import gif as gf
 import pick_coordinates
-import t
+import mappingTables as mt
+import uiTesting as ui
 
-filename = t.filepick()
-#coordinates = pick_coordinates.pick(r'''C:\Users\moham\Desktop\football\SportsSmartAnalysis\media\1.mp4''')
+
+filename=mt.mappingVideo()
+print(filename)
+cord_array = pick_coordinates.c
 coordinates = pick_coordinates.pick(filename)
 
+print(np.array(coordinates))
 
-print("[INFO] starting video stream...")
+x,y,frames = track.run(filename,np.array(coordinates))
 
-x,y = track.run('media/2.mp4',np.array(coordinates))
 
+mt.mappingCoordinates(x,y,frames)
 ht.heat(x,y)
 gf.animation(x,y)
+
+
+#TODO LIST
+#----------
+# file picker cancel button
+# back sequence
+# close sequence
+# exceptions and test cases(cannot unpack non-iterable NoneType object, TypeError: argument of type 'NoneType' is not iterable)
+
 
 
 
