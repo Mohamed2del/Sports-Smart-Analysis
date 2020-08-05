@@ -3,7 +3,6 @@ import numpy as np
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import itertools
-import dataEntry as data
 import easygui
 import math
 from PIL import Image

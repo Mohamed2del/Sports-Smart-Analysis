@@ -27,6 +27,7 @@ def playerDataEntry():
     else:
             playerid = ui.informationForm("Please Enter Player's ID !",["Player ID"])
             return playerid
+            
 
 def matchDataEntry():
 

@@ -9,7 +9,7 @@ import time
 import mapping as map
 import mappingTables as mt
 import numpy as np
-
+from real_time_stats import real_time
 
 points = []
 
@@ -81,12 +81,8 @@ def run (video , pts_src) :
 		prev = now
 		fpstext = 'FPS = ' + str(int(fps))  
 		
-		draw.drawText(frame,str("FPS :"+ fpstext +"FPS") , (40,40))
-		draw.drawText(frame,str("Real Time Distance : "+"%.2f" % round(distance, 2)+" m") , (40,80))
-		draw.drawText(frame,str("Total Distance : "+"%.2f" % round(total_distance, 2)+" m") , (40,120))
-		draw.drawText(frame,str("Current Speed  : " + "%.2f" % round(((distance*3.6)/3) , 2)+" km/h") , (40,160))
-		draw.drawText(frame,str("Max Speed  :" + "%.2f" % round(max_speed,2) + "km/h"), (40,200))
-		draw.drawText(frame,str("Min Speed  :" + "%.2f" % round(min_speed,2) + "km/h"), (40,240))
+		##real_time_stats_on_screen
+		real_time(frame,distance , total_distance , max_speed , min_speed)
 
 
         # check to see if we have reached the end of the stream
@@ -122,7 +118,7 @@ def run (video , pts_src) :
 
 				if (len(points) >= 4):
 					#(x1,y1,x2,y2)
-					distance = mt.distance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])/100
+					#distance = mt.distance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])/100
 					total_distance = total_distance + distance
 					speed = ((distance) / t)*3.6
 					speed_list.append(speed)
@@ -146,8 +142,8 @@ def run (video , pts_src) :
 			if key == ord("s"):
 				# select the bounding box of the object we want to track (make
 				# sure you press ENTER or SPACE after selecting the ROI)
-				mt.mappingMatch()
-				mt.mappingPlayer()
+				# mt.mappingMatch()
+				# mt.mappingPlayer()
 
 
 					
