@@ -1,7 +1,7 @@
 import cv2
 
 # Blue color in BGR 
-color = (255,0,0) 
+color = (0, 255, 255) 
 #colors_circle = [[255,0,0],[0,255,0],[255,255,255],[100,200,250]]
 # Line thickness of 2 px 
 thickness = 1
