@@ -23,6 +23,6 @@ def heat (x,y, sports) :
 	#Tidy Axes
 	plt.axis('off')
 	
-	sns.kdeplot(x,y, legend=True , n_level = 50 )
+	sns.kdeplot(x,y, legend=True )
 	
 	plt.show(block = False)

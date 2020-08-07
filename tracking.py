@@ -13,7 +13,6 @@ import distance  as dis
 from real_time_stats import real_time
 
 points = []
-
 # initialize a dictionary that maps strings to their corresponding
 # OpenCV object tracker implementations
 OPENCV_OBJECT_TRACKERS = {
@@ -63,6 +62,7 @@ def run (video , pts_src , sport) :
 	min_speed = 0
 	pointer = 0
 	t = 3
+	frames_count = 0
 
 
 	# loop over frames from the video stream
@@ -72,7 +72,7 @@ def run (video , pts_src , sport) :
 	trackers = cv2.MultiTracker_create() 
 
 	while True:
-		time.sleep(0.0099)
+		frames_count = frames_count + 1
 		# grab the current frame, then handle if we are using a
 		# VideoStream or VideoCapture object
 		frame = vs.read()
@@ -116,7 +116,7 @@ def run (video , pts_src , sport) :
 				x_map,y_map= map.map([x+int(w/2),y+int(h)],pts_src , sport)
 				xs.append(x_map)
 				ys.append(y_map)
-				frames.append(str(int(fps)))
+				frames.append(frames_count)
 
 				points.append(x_map)
 				points.append(y_map)

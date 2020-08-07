@@ -1,31 +1,46 @@
 import mysql.connector
 import numpy as np
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename
 import itertools
 import easygui
 import math
-from PIL import Image
 import uiTesting as ui
 
 
 
-
-
-   
 mydb = mysql.connector.connect(host="localhost", user="playertrack", password="123123", database="playertrack")
 mycursor = mydb.cursor()
 
-def mappingCoordinates(x,y,frames):
-   
+
+def checkEntry():
+    playerData = ui.playerDataEntry()
+    print(playerData)
+    
+    print("\nCheck Entry\n")
+
+
+    
+       
+
+    matchData = ui.matchDataEntry()
+    print(matchData)
+
+    
+
+    return playerData, matchData
+
+
+def mappingCoordinates(x,y,frames , playerId,matchId ):
+
     zipped=zip(x,y,frames)
     type(zipped)
 
-    print("\n")
+    
     for i, j, f in zipped:
         
-        coordinates = "INSERT INTO coordinates_player (x_coordinate, y_coordinate, current_frame) VALUES (%s,%s,%s)"
-        value=(int(i), int(j), int(f))
+        coordinates = "INSERT INTO coordinates_player (id_player, id_match, x_coordinate, y_coordinate, current_frame) VALUES (%s,%s,%s,%s,%s)"
+        print(playerId)
+        print(matchId)
+        value=( playerId, matchId, int(i), int(j), int(f))
         mycursor.execute(coordinates, value)
         
 
@@ -37,42 +52,45 @@ def mappingCoordinates(x,y,frames):
         
 
 def mappingVideo():
-#    try:
     ext=".mp4"
-    print("Please select a video ...")
 
     while(True):
-        filename = easygui.fileopenbox()
-        # show an "Open" dialog box and return the path to the selected file
+        try:
+            filename = easygui.fileopenbox("Please Select Video")
+            # show an "Open" dialog box and return the path to the selected file
 
 
-        if(ext not in filename):
-            print(filename+"\n"+"Please Select a file that has \".mp4\" in the end\n")
-            continue
+            if(ext not in filename):
 
-        break
-        # loop to check if ext is not ".mp4" once it's found --- break the loop
+                easygui.msgbox("Please Select a file that has \".mp4\" extention","Wrong Entry Message","OK")
+                continue
+
+            
+            # loop to check if ext is not ".mp4" once it's found --- break the loop
 
 
-        
-    
 
-    video = "INSERT INTO video (video_name) VALUES (%s)"
-    value = filename
-    mycursor.execute(video, (value,))    
-    mydb.commit()
-    print(mycursor.rowcount, "Video is selected and it's name stored in the database.\n")
-    return filename
+            video = "INSERT INTO video (video_name) VALUES (%s)"
+            value = filename
+            mycursor.execute(video, (value,))    
+            mydb.commit()
+            print(mycursor.rowcount, "Video is selected and it's name stored in the database.\n")
+            return filename
 
+        except mysql.connector.Error as e:
+            exception=easygui.ccbox("The video name is already stored in the database would you like to continue?", "Warning Message")
+
+            if (exception):     # show a Continue/Cancel dialog
+                return filename  # user chose Continue
+            else:  # user chose Cancel
+                continue
 
     #Called in main function
-
-#    except mys
         
 
 
-def hasNumbers(inputString):
-    return any(char.isdigit() for char in inputString)
+# def hasNumbers(inputString):
+#     return any(char.isdigit() for char in inputString)
 
 
 
@@ -124,29 +142,33 @@ def hasNumbers(inputString):
 
 
 
-def mappingMatch():
+
+
+
+
+
+# def mappingMatch():
    
-        fields=[]
-        fields=ui.matchDataEntry()
-        #to return two options if the match is new or not
-        #return new match 5 index firstTeam, secondTeam, ....
-        if(len(fields)>1):
+#         matchData=ui.matchDataEntry()
+#         #to return two options if the match is new or not
+#         #return new match 5 index firstTeam, secondTeam, ....
+#         if(len(matchData)>1):
 
            
-            match = "INSERT INTO match_played (first_team, second_team, match_date, stadium, result) VALUES (%s,%s,%s,%s,%s)"
-            firstTeam, secondTeam, matchDate, stadium, result = fields
+#             match = "INSERT INTO match_played (first_team, second_team, match_date, stadium, result) VALUES (%s,%s,%s,%s,%s)"
+#             firstTeam, secondTeam, matchDate, stadium, result = matchData
             
             
-            value = (firstTeam, secondTeam, matchDate, stadium, result)
-            mycursor.execute(match, value)
-            mydb.commit()
-            print(mycursor.rowcount, "Player profile is Created.")
+#             value = (firstTeam, secondTeam, matchDate, stadium, result)
+#             mycursor.execute(match, value)
+#             mydb.commit()
+#             print(mycursor.rowcount, "Player profile is Created.")
 
-        else:
-            #return match ID   
-            mycursor.execute("SELECT match_id FROM match_played WHERE match_id=%s", (fields[0],))
-            search = mycursor.fetchall()
-            print(search)
+#         else:
+#             #return match ID   
+#             mycursor.execute("SELECT match_id FROM match_played WHERE match_id=%s", (matchData[0],))
+#             search = mycursor.fetchall()
+#             print(search)
 
 
 
@@ -201,31 +223,29 @@ def mappingMatch():
 #             print("First Name: NAME\nLast Name: NAME\nBirth Date: YYYY-MM-DD\nNationality: NAME\nClub Name: NAME\nPlayer Number: NN\nPosition: NAME OR APPREVEIATION\n")
             
 
-def mappingPlayer():
+# def mappingPlayer():
 
-        fields=[]
-        fields=ui.playerDataEntry()
-        print(fields)
-        if(len(fields)>1):
-        #to return two options if the player is new or not
+#         playerData=ui.playerDataEntry()
+#         if(len(playerData)>1):
+#         #to return two options if the player is new or not
             
 
-            #return new player 7 index firstName, lastName, ....
-            player = "INSERT INTO player (player_first_name, player_last_name, birth_date, nationality, club_name, number_player, position) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-            firstName,lastName,birthDate,nationality,clubName,number,position = fields
-            ##############################################################
+#             #return new player 7 index firstName, lastName, ....
+#             player = "INSERT INTO player (player_first_name, player_last_name, birth_date, nationality, club_name, number_player, position) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+#             firstName,lastName,birthDate,nationality,clubName,number,position = playerData
+#             ##############################################################
             
             
-            value = (firstName,lastName,birthDate,nationality,clubName,number,position)
-            mycursor.execute(player, value)
-            mydb.commit()
-            print(mycursor.rowcount, "Player profile is Created.")
+#             value = (firstName,lastName,birthDate,nationality,clubName,number,position)
+#             mycursor.execute(player, value)
+#             mydb.commit()
+#             print(mycursor.rowcount, "Player profile is Created.")
 
-        else:
-            #return player ID       
-            mycursor.execute("SELECT player_id FROM player WHERE player_id=%s", (fields[0],))
-            search = mycursor.fetchall()
-            print(search)
+#         else:
+#             #return player ID       
+#             mycursor.execute("SELECT player_id FROM player WHERE player_id=%s", (playerData[0],))
+#             search = mycursor.fetchall()
+#             print(search)
 
 
 
@@ -239,15 +259,16 @@ def distance(x1,y1,x2,y2):
     return dist
 
 
-def mappingPerformance():
+def mappingPerformance(playerId,matchId , total_distance , average_speed):
 
-    performance = "INSERT INTO performance_player (distance_covered, avg_speed) VALUES (%s,%s)"
-
-    value=(7.8,20.4)
+    performance = "INSERT INTO performance_player (id_player, id_match, distance_covered, avg_speed) VALUES (%s,%s,%s,%s)"
+    value=(playerId,matchId,total_distance,average_speed)
     mycursor.execute(performance, value)
         
     mydb.commit()
     print(mycursor.rowcount, "Performance of the requested player is recorded.")
+
+    
 
 
 

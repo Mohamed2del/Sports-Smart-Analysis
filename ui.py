@@ -2,10 +2,8 @@ from easygui import *
 
 
 
-def sportsType():
-    image = "sports-smart-analysis.png"
-    msg = "Please Choose the Sport ?"
-    choices = ["Football","Tennis" ]
+def choicesBox(image  ,msg , choices ):
+    
     reply = buttonbox(msg, image=image, choices=choices)
     print(reply)
     print(type(reply))
