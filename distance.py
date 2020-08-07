@@ -15,7 +15,6 @@ x_ratio_basketball = 1500/ 349
 y_ratio_basketball = 2800/ 623
 def calculateDistance(x1,y1,x2,y2,sports):  
      if x1 < 0 or y1 < 0 or x2 < 0 or y2 <0:
-          raise ValueError("Points cant be negative ")
           return 0
 
      if sports ==1 :

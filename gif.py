@@ -14,7 +14,7 @@ def animation (x,y,sports):
     
 	ax.imshow(img,origin ='upper')
 	plt.ylim(max(plt.ylim()), min(plt.ylim()))
-	graph, = plt.plot([], [])
+	graph, = plt.plot([], [] , color='red')
 	def animate(i):
 		graph.set_data(x[:i+1], y[:i+1])
             

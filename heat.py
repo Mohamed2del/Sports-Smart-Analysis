@@ -22,7 +22,7 @@ def heat (x,y, sports) :
 
 	#Tidy Axes
 	plt.axis('off')
-	
-	sns.kdeplot(x,y, legend=True )
-	
+
+	sns.kdeplot(x,y, legend=True , cmap = "Reds" )
 	plt.show(block = False)
+

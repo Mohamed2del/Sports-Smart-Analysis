@@ -11,6 +11,7 @@ import mapping as map
 import numpy as np
 import distance  as dis
 from real_time_stats import real_time
+import speed as speedFunction
 
 points = []
 # initialize a dictionary that maps strings to their corresponding
@@ -53,7 +54,7 @@ def run (video , pts_src , sport) :
     
     
 	fps = 0.0
-	prev = time.time()
+	prev = 0
 
 	distance = 0
 	total_distance = 0
@@ -65,6 +66,13 @@ def run (video , pts_src , sport) :
 	frames_count = 0
 
 
+
+	if (sport == 1):
+		per_frame = 60
+		t = 2
+	else : 
+		per_frame = 60
+		t = 2
 	# loop over frames from the video stream
 	vs = cv2.VideoCapture(video)
 	#change_res(vs,854,480)
@@ -77,13 +85,13 @@ def run (video , pts_src , sport) :
 		# VideoStream or VideoCapture object
 		frame = vs.read()
 		frame = frame[1] 
-		now = time.time()
-		fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
-		prev = now
-		fpstext = 'FPS = ' + str(int(fps))  
+		# now = time.time()
+		# fps = (fps*FPS_SMOOTHING + (1/(now - prev))*(1.0 - FPS_SMOOTHING))
+		# prev = now
+		# fpstext = 'FPS = ' + str(int(fps))  
 		
 		##real_time_stats_on_screen
-		real_time(frame,distance , total_distance , max_speed , min_speed)
+		real_time(frame, distance , total_distance , max_speed , min_speed)
 
 
 
@@ -110,7 +118,7 @@ def run (video , pts_src , sport) :
 			
 				# print(str(x+int(w/2))+','+str(y+int(h/2)))
 
-			if (i % 90 == 0 ):	
+			if (i % per_frame == 0 ):	
 				# xs.append(x+int(w/2))
 				# ys.append(y+int(h))	
 				x_map,y_map= map.map([x+int(w/2),y+int(h)],pts_src , sport)
@@ -126,7 +134,7 @@ def run (video , pts_src , sport) :
 					#distance = mt.distance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])/100
 					distance = dis.calculateDistance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer],sport)
 					total_distance = total_distance + distance
-					speed = ((distance) / t) * 3.6
+					speed = speedFunction.calculate_Speed(distance,t)
 					speed_list.append(speed)
 					max_speed = max(speed_list)
 					min_speed = min(speed_list)

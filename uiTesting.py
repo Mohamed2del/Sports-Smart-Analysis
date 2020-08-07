@@ -141,7 +141,7 @@ def matchDataEntry():
 
 
 def start():
-    reply = easygui.buttonbox(image="",title="Player Performance", choices=["Get Started !!","Exit"])
+    reply = easygui.buttonbox(image="sports-smart-analysis.png",title="Player Performance", choices=["Get Started !!","Exit"])
 
     if(reply=="Get Started !!"):
         print("OK")
