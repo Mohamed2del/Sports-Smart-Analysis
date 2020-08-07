@@ -4,6 +4,15 @@ from operator import itemgetter
 
 
 
+def sports ():
+    sport = ui.sportsType()
+    if sport =="Football":
+        return 1
+   
+    else :
+        return 0
+    
+
 def hasNumbers(inputString):
     return any(char.isdigit() for char in inputString)
 

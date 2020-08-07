@@ -4,8 +4,12 @@ import matplotlib.animation as animation
 from matplotlib.animation import FuncAnimation
 import cv2
 import Drawing as draw
-def animation (x,y):
-	img = cv2.imread("media/football.jpg")
+def animation (x,y,sports):
+	if sports == 1 : 
+		img = cv2.imread("media/football.jpg")
+	elif sports ==0 : 
+		img = cv2.imread("media/map2.jpg")
+
 	fig, ax = plt.subplots()
     
 	ax.imshow(img,origin ='upper')

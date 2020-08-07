@@ -7,8 +7,9 @@ import cv2
 import  Drawing as draw
 import time
 import mapping as map
-import mappingTables as mt
+#import mappingTables as mt
 import numpy as np
+import distance  as dis
 from real_time_stats import real_time
 
 points = []
@@ -43,7 +44,7 @@ def change_res(cap , width, height):
 
 
     
-def run (video , pts_src) :
+def run (video , pts_src , sport) :
 	Player_Marked =False
 
     
@@ -85,10 +86,14 @@ def run (video , pts_src) :
 		real_time(frame,distance , total_distance , max_speed , min_speed)
 
 
+
         # check to see if we have reached the end of the stream
 		if frame is None:
 			#print(corr)
-			return xs , ys , frames
+			average_speed = sum(speed_list)/len(speed_list)
+			
+
+			return xs , ys , frames , total_distance , max_speed , min_speed , average_speed
 			break
 	 
 		# resize the frame (so we can process it faster)
@@ -108,7 +113,7 @@ def run (video , pts_src) :
 			if (i % 90 == 0 ):	
 				# xs.append(x+int(w/2))
 				# ys.append(y+int(h))	
-				x_map,y_map= map.map([x+int(w/2),y+int(h)],pts_src)
+				x_map,y_map= map.map([x+int(w/2),y+int(h)],pts_src , sport)
 				xs.append(x_map)
 				ys.append(y_map)
 				frames.append(str(int(fps)))
@@ -119,8 +124,9 @@ def run (video , pts_src) :
 				if (len(points) >= 4):
 					#(x1,y1,x2,y2)
 					#distance = mt.distance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer])/100
+					distance = dis.calculateDistance(points[pointer-3],points[pointer-2],points[pointer-1],points[pointer],sport)
 					total_distance = total_distance + distance
-					speed = ((distance) / t)*3.6
+					speed = ((distance) / t) * 3.6
 					speed_list.append(speed)
 					max_speed = max(speed_list)
 					min_speed = min(speed_list)

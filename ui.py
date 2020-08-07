@@ -2,6 +2,15 @@ from easygui import *
 
 
 
+def sportsType():
+    image = "sports-smart-analysis.png"
+    msg = "Please Choose the Sport ?"
+    choices = ["Football","Tennis" ]
+    reply = buttonbox(msg, image=image, choices=choices)
+    print(reply)
+    print(type(reply))
+    return reply
+    
 def informationForm(msg,fieldNames):
 
     title = "Sports Smart Analysis"

@@ -5,21 +5,24 @@ import gif as gf
 import pick_coordinates
 import mappingTables as mt
 import uiTesting as ui
+import t 
 
-
-filename=mt.mappingVideo()
+sport = ui.sports()
+filename= t.filepick()
 print(filename)
 cord_array = pick_coordinates.c
 coordinates = pick_coordinates.pick(filename)
 
 print(np.array(coordinates))
 
-x,y,frames = track.run(filename,np.array(coordinates))
+x,y,frames , total_distance , max_speed , min_speed ,average_speed = track.run(filename,np.array(coordinates),sport)
 
+print(max_speed)
+print("average speed : " + str(average_speed))
 
-mt.mappingCoordinates(x,y,frames)
-ht.heat(x,y)
-gf.animation(x,y)
+#mt.mappingCoordinates(x,y,frames)
+ht.heat(x,y,sport)
+gf.animation(x,y,sport)
 
 
 #TODO LIST
