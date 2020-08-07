@@ -68,8 +68,8 @@ def run (video , pts_src , sport) :
 
 
 	if (sport == 1):
-		per_frame = 60
-		t = 2
+		per_frame = 90
+		t = 3
 	else : 
 		per_frame = 60
 		t = 2
