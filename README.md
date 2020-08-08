@@ -8,7 +8,7 @@ Sports Smart Analysis is a Computer Vision based system used in Sports analytics
 
 # Player's Movements Animated visualization
 
-<img src="https://giphy.com/gifs/WUmSGvpvsGDcXlTHPm/html5" width="40" height="40" />
+<img src="https://media.giphy.com/media/WUmSGvpvsGDcXlTHPm/giphy.gif" />
 
 
 # Heatmap visualization
