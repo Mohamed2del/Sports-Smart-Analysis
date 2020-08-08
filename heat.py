@@ -1,4 +1,3 @@
-import pandas as pd
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,7 +24,7 @@ def heat(x, y, sports):
 	# Tidy Axes
 	plt.axis('off')
 
-	sns.kdeplot(x, y, legend=True)
+	sns.kdeplot( x , y , legend=True , cmap = "Reds" )
 
 	plt.show(block=False)
 
@@ -57,7 +56,7 @@ def retrivedHeat(playerid, matchId):
 	# Tidy Axes
 
 	plt.axis('off')
-	sns.kdeplot(x, y, legend=True)
+	sns.kdeplot(x, y, legend=True , cmap = "Reds")
 
 	plt.show(block=False)
 

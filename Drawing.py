@@ -4,7 +4,7 @@ import cv2
 color = (0, 255, 255) 
 #colors_circle = [[255,0,0],[0,255,0],[255,255,255],[100,200,250]]
 # Line thickness of 2 px 
-thickness = 1
+thickness = 2
 font = cv2.FONT_HERSHEY_SIMPLEX 
 # fontScale 
 fontScale = 1

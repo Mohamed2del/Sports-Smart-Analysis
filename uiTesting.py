@@ -153,9 +153,9 @@ def welcome():
 def start():
     while (True):
         reply = easygui.buttonbox(msg="Choose one of the options", title="Selecting Operation",
-                                  choices=["Track player", "Retrive Player Performance", "Back", "Cancel"])
+                                  choices=["Track New Player", "Retrive Player Performance", "Back", "Cancel"])
 
-        if (reply == "Track player"):
+        if (reply == "Track New Player"):
             break
 
 
