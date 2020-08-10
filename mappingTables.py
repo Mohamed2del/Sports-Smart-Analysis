@@ -4,6 +4,7 @@ import itertools
 import easygui
 import math
 import uiTesting as ui
+import easygui
 
 
 
@@ -46,6 +47,7 @@ def mappingCoordinates(x,y,frames , playerId,matchId ):
 
     mydb.commit()
     print(mycursor.rowcount, "Player Record is Inserted.")
+    easygui.msgbox("Player Record is Inserted","Report Message", "OK")
 
     #Called in main function
 
@@ -266,6 +268,8 @@ def mappingPerformance(playerId,matchId , total_distance , average_speed):
     mycursor.execute(performance, value)
         
     mydb.commit()
+
+    easygui.msgbox("Player total distance covered: "+str(round(total_distance))+"m\nPlayer Average speed in the match: "+str(round(average_speed))+"Km/h","Report Message", "OK")
     print(mycursor.rowcount, "Performance of the requested player is recorded.")
 
     

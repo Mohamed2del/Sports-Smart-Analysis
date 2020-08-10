@@ -44,7 +44,7 @@ def isDate(string):
     try:
         datetime.datetime.strptime(string, "%Y-%m-%d")
     except ValueError:
-        easygui.msgbox("Date cannot contain letters", "Warnning Message", "OK")
+        easygui.msgbox("Date must be like the following format YYYY-MM-DD and cannot contain letters", "Warnning Message", "OK")
 
 
 def playerDataEntry():
@@ -68,8 +68,7 @@ def playerDataEntry():
                     playerRec = "INSERT INTO player (player_first_name, player_last_name, birth_date, nationality, club_name, number_player, position) VALUES (%s,%s,%s,%s,%s,%s,%s)"
                     FirstName, LastName, BirthDate, Nationlity, Club, PlayerNumber, Position = itemgetter(0, 1, 2, 3, 4,
                                                                                                           5, 6)(player)
-                    if (hasNumbers(FirstName) or hasNumbers(LastName) or hasNumbers(Nationlity) or hasNumbers(
-                            Club) or hasNumbers(Position)):
+                    if (hasNumbers(FirstName) or hasNumbers(LastName) or hasNumbers(Nationlity) or hasNumbers(Club) or hasNumbers(Position)):
                         easygui.msgbox("Player name, nationality, club and Position cannot contain Integers",
                                        "Warnning Message", "OK")
                         continue
@@ -79,8 +78,8 @@ def playerDataEntry():
                                        "Warnning Message", "OK")
                         continue
 
-                    if (isDate(BirthDate)):
-                        easygui.msgbox("Date must be like the following format YYYY-MM-DD", "Warnning Message", "OK")
+                    if (not isDate(BirthDate)):
+        
                         continue
 
                     value = (FirstName, LastName, BirthDate, Nationlity, Club, PlayerNumber, Position)
@@ -109,7 +108,7 @@ def matchDataEntry():
         if (MatchState):
             while (True):
                 match = ui.informationForm("Please Enter Match's Information",
-                                           ["First Team", "Second Team", "Match Date", "result", "Stadium"])
+                                           ["First Team", "Second Team", "Match Date", "Stadium", "result"])
 
                 if (match == 1):
                     break
@@ -120,13 +119,17 @@ def matchDataEntry():
                 else:
 
                     matchRec = "INSERT INTO matches (first_team, second_team, match_date, stadium, result) VALUES (%s,%s,%s,%s,%s)"
-
                     FirstTeam, SecondTeam, MatchDate, Stadium, Result = itemgetter(0, 1, 2, 3, 4)(match)
 
+
+                    
+
+                    if (not isDate(MatchDate)):
+                        continue
+
+
                     value = (FirstTeam, SecondTeam, MatchDate, Stadium, Result)
-
                     mycursor.execute(matchRec, value)
-
                     mydb.commit()
                     easygui.msgbox("Match data is stored in Database", "Confirmation Message", "OK")
                     return mycursor.lastrowid
@@ -153,9 +156,9 @@ def welcome():
 def start():
     while (True):
         reply = easygui.buttonbox(msg="Choose one of the options", title="Selecting Operation",
-                                  choices=["Track New Player", "Retrive Player Performance", "Back", "Cancel"])
+                                  choices=["Track player", "Retrive Player Performance", "Back", "Cancel"])
 
-        if (reply == "Track New Player"):
+        if (reply == "Track player"):
             break
 
 
@@ -176,11 +179,12 @@ def start():
 
             ht.retrivedHeat(playerid, matchId)
             gf.retrivedAnimation(playerid, matchId)
+            retrivedPerformance(playerid, matchId)
             response = easygui.ccbox("Do want to do another operation ?", "Confirmation Message")
             if (response):
                 continue
             else:
-                break
+                sys.exit(0)
 
         elif (reply == "Back"):
             return 1
@@ -197,3 +201,22 @@ def end():
         return -1
     else:
         sys.exit(0)
+
+
+
+def retrivedPerformance(playerid, matchId):
+    mydb = mysql.connector.connect(host="localhost", user="playertrack", password="123123", database="playertrack")
+    mycursor = mydb.cursor()
+
+
+    performance = "SELECT distance_covered, avg_speed FROM performance_player WHERE id_player=%s AND id_match=%s"
+    values = (playerid, matchId)
+
+    mycursor.execute(performance, values)
+    myresult = mycursor.fetchall()
+
+    for i, j in myresult:
+        x=int(i)
+        y=int(j)
+
+    easygui.msgbox("Player total distance covered: "+str(x)+"m\nPlayer Average speed in the match: "+str(y)+"Km/h","Report Message", "OK")
